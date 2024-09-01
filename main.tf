@@ -10,7 +10,7 @@ resource "google_apigee_organization" "my-test-org" {
 }
 
 resource "google_apigee_environment" "my-test-env" {
-  org_id      = google_apigee_organization."my-test-org.name
+  org_id      = google_apigee_organization.my-test-org.name
   name        = "test"
   display_name = "Test Environment"
 }
