@@ -4,20 +4,23 @@ provider "google" {
   region  = var.region
 }
 
+resource "google_compute_global_address" "apigee_range" {
+  name          = "apigee-range"
+  purpose       = "VPC_PEERING"
+  address_type  = "INTERNAL"
+  prefix_length = 16
+  network       = google_compute_network.apigee_network.id
+}
+
+resource "google_service_networking_connection" "apigee_vpc_connection" {
+  network                 = google_compute_network.apigee_network.id
+  service                 = "servicenetworking.googleapis.com"
+  reserved_peering_ranges = [google_compute_global_address.apigee_range.name]
+}
+
 resource "google_apigee_organization" "my-test-org" {
-  name         = "my-test-org"
-  display_name = "Example Organization"
-  project_id = var.project_id
-}
-
-resource "google_apigee_environment" "my-test-env" {
-  org_id      = google_apigee_organization.my-test-org.name
-  name        = "test"
-  display_name = "Test Environment"
-}
-
-resource "google_apigee_environment_group" "env-group" {
-  name           = "test-env-group"
-  display_name    = "Example Environment Group"
-  environments    = [google_apigee_environment.my-test-env.name]
+  analytics_region   = "us-central1"
+  project_id         = data.google_client_config.current.project
+  authorized_network = google_compute_network.apigee_network.id
+  depends_on         = [google_service_networking_connection.apigee_vpc_connection]
 }
