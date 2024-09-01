@@ -22,3 +22,10 @@ resource "google_apigee_organization" "my-test-org" {
   authorized_network = google_compute_network.apigee_network.id
   depends_on         = [google_service_networking_connection.apigee_vpc_connection]
 }
+
+
+# This is to Enable the Compute Engine API
+resource "google_project_service" "compute" {
+  project = var.project_id
+  service = "compute.googleapis.com"
+}
