@@ -4,6 +4,10 @@ provider "google" {
   region  = var.region
 }
 
+resource "google_compute_network" "apigee_network" {
+  name       = "apigee-network"
+}
+
 resource "google_compute_global_address" "apigee_range" {
   name          = "apigee-range"
   purpose       = "VPC_PEERING"
