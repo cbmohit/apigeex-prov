@@ -7,6 +7,7 @@ provider "google" {
 resource "google_apigee_organization" "my-test-org" {
   name         = "my-test-org"
   display_name = "Example Organization"
+  project_id = var.project_id
 }
 
 resource "google_apigee_environment" "my-test-env" {
