@@ -4,7 +4,7 @@ provider "google" {
   region  = var.region
 }
 
-# Enable the Compute Engine API
+# This is to Enable the Compute Engine API
 resource "google_project_service" "compute" {
   project = var.project_id
   service = "compute.googleapis.com"
