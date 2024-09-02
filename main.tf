@@ -41,8 +41,8 @@ resource "google_apigee_organization" "my-test-org" {
   analytics_region   = "us-central1"
   project_id         = var.project_id
   authorized_network = google_compute_network.apigee_network.id
-  depends_on         = [google_service_networking_connection.apigee_vpc_connection]
-  depends_on = [
-    google_project_service.servicenetworking
+  depends_on         = [
+    google_project_service.servicenetworking,
+    google_service_networking_connection.apigee_vpc_connection
   ]
 }
