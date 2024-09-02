@@ -20,7 +20,7 @@ resource "google_compute_network" "apigee_network" {
   name       = "apigee-network"
   depends_on = [
     google_project_service.servicenetworking,
-    google_project_service.apigee
+    google_project_service.apigeeapi
   ]
 }
 
@@ -32,7 +32,7 @@ resource "google_compute_global_address" "apigee_range" {
   network       = google_compute_network.apigee_network.id
   depends_on = [
     google_project_service.servicenetworking,
-    google_project_service.apigee
+    google_project_service.apigeeapi
   ]
 }
 
@@ -42,7 +42,7 @@ resource "google_service_networking_connection" "apigee_vpc_connection" {
   reserved_peering_ranges = [google_compute_global_address.apigee_range.name]
   depends_on = [
     google_project_service.servicenetworking,
-    google_project_service.apigee
+    google_project_service.apigeeapi
   ]
 }
 
@@ -52,7 +52,7 @@ resource "google_apigee_organization" "my-test-org" {
   authorized_network = google_compute_network.apigee_network.id
   depends_on         = [
     google_project_service.servicenetworking,
-    google_project_service.apigee,
+    google_project_service.apigeeapi,
     google_service_networking_connection.apigee_vpc_connection
   ]
 }
