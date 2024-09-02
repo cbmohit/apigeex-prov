@@ -10,10 +10,17 @@ resource "google_project_service" "servicenetworking" {
   service = "servicenetworking.googleapis.com"
 }
 
+# This is to Enable the apigee API
+resource "google_project_service" "apigeeapi" {
+  project = var.project_id
+  service = "apigee.googleapis.com"
+}
+
 resource "google_compute_network" "apigee_network" {
   name       = "apigee-network"
   depends_on = [
-    google_project_service.servicenetworking
+    google_project_service.servicenetworking,
+    google_project_service.apigee
   ]
 }
 
@@ -24,7 +31,8 @@ resource "google_compute_global_address" "apigee_range" {
   prefix_length = 16
   network       = google_compute_network.apigee_network.id
   depends_on = [
-    google_project_service.servicenetworking
+    google_project_service.servicenetworking,
+    google_project_service.apigee
   ]
 }
 
@@ -33,7 +41,8 @@ resource "google_service_networking_connection" "apigee_vpc_connection" {
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.apigee_range.name]
   depends_on = [
-    google_project_service.servicenetworking
+    google_project_service.servicenetworking,
+    google_project_service.apigee
   ]
 }
 
@@ -43,6 +52,7 @@ resource "google_apigee_organization" "my-test-org" {
   authorized_network = google_compute_network.apigee_network.id
   depends_on         = [
     google_project_service.servicenetworking,
+    google_project_service.apigee,
     google_service_networking_connection.apigee_vpc_connection
   ]
 }
