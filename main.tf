@@ -4,8 +4,17 @@ provider "google" {
   region  = var.region
 }
 
+# This is to Enable the Service networking API
+resource "google_project_service" "servicenetworking" {
+  project = var.project_id
+  service = "servicenetworking.googleapis.com"
+}
+
 resource "google_compute_network" "apigee_network" {
   name       = "apigee-network"
+  depends_on = [
+    google_project_service.servicenetworking
+  ]
 }
 
 resource "google_compute_global_address" "apigee_range" {
@@ -14,12 +23,18 @@ resource "google_compute_global_address" "apigee_range" {
   address_type  = "INTERNAL"
   prefix_length = 16
   network       = google_compute_network.apigee_network.id
+  depends_on = [
+    google_project_service.servicenetworking
+  ]
 }
 
 resource "google_service_networking_connection" "apigee_vpc_connection" {
   network                 = google_compute_network.apigee_network.id
   service                 = "servicenetworking.googleapis.com"
   reserved_peering_ranges = [google_compute_global_address.apigee_range.name]
+  depends_on = [
+    google_project_service.servicenetworking
+  ]
 }
 
 resource "google_apigee_organization" "my-test-org" {
@@ -27,4 +42,7 @@ resource "google_apigee_organization" "my-test-org" {
   project_id         = var.project_id
   authorized_network = google_compute_network.apigee_network.id
   depends_on         = [google_service_networking_connection.apigee_vpc_connection]
+  depends_on = [
+    google_project_service.servicenetworking
+  ]
 }
