@@ -4,12 +4,6 @@ provider "google" {
   region  = var.region
 }
 
-# This is to Enable the Compute Engine API
-resource "google_project_service" "compute" {
-  project = var.project_id
-  service = "compute.googleapis.com"
-}
-
 resource "google_compute_network" "apigee_network" {
   name       = "apigee-network"
 }
