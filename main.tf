@@ -10,7 +10,7 @@ resource "google_project_service" "servicenetworking" {
   service = "servicenetworking.googleapis.com"
 }
 
-# This is to Enable the apigee API
+# Enable the apigee API
 resource "google_project_service" "apigeeapi" {
   project = var.project_id
   service = "apigee.googleapis.com"
